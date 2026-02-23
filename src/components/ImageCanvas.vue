@@ -7,12 +7,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { fabric } from 'fabric'
-import { Camera, CameraResultType } from '@capacitor/camera'
 import { Filesystem, Directory } from '@capacitor/filesystem'
 
 const canvasEl = ref<HTMLCanvasElement>()
-let canvas: fabric.Canvas | null = null
-let activeImage: fabric.Image | null = null
+let canvas: any = null
+let activeImage: any = null
 const emit = defineEmits<{
   'image-loaded': []
   'image-changed': []
