@@ -24,10 +24,17 @@ button {
   border-radius: 4px;
   font-size: 14px;
   transition: all 0.2s;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: none !important;
 }
 
-button:active {
-  transform: scale(0.95);
+button:active,
+button:focus,
+button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 input[type="file"] {

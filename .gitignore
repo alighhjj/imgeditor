@@ -1,6 +1,7 @@
 node_modules/
 dist/
 android/
+update_files/
 .DS_Store
 *.log
 .env

@@ -13,6 +13,9 @@ const config: CapacitorConfig = {
     },
     Filesystem: {
       permissions: ['read', 'write']
+    },
+    CapacitorMediaScanner: {
+      permissions: ['read']
     }
   }
 };
