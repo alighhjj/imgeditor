@@ -116,8 +116,13 @@ const resizeCanvas = () => {
   if (!canvas || !wrapperEl.value) return
   
   const wrapper = wrapperEl.value
-  const width = wrapper.clientWidth
-  const height = wrapper.clientHeight
+  let width = wrapper.clientWidth
+  let height = wrapper.clientHeight
+  
+  if (width === 0 || height === 0) {
+    width = window.innerWidth
+    height = window.innerHeight - 200
+  }
   
   canvas.setWidth(width)
   canvas.setHeight(height)
@@ -615,10 +620,10 @@ defineExpose({
 <style scoped>
 .canvas-wrapper {
   width: 100%;
-  height: calc(100% - 80px);
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   overflow: hidden;
 }
@@ -629,7 +634,7 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #e0e0e0;
+  background: #1a1a1a;
   overflow: hidden;
   transition: background 0.3s ease;
 }

@@ -296,12 +296,11 @@ const onImageChanged = () => {
 .canvas-area {
   flex: 1;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  background: #0a0a0a;
+  background: #1a1a1a;
   position: relative;
   overflow: hidden;
-  padding: 0 0 80px 0;
   box-sizing: border-box;
   min-height: 0;
 }
@@ -320,9 +319,9 @@ const onImageChanged = () => {
 
 .bottom-toolbar {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  padding: 8px 4px;
+  padding: 8px 12px;
   background: #252525;
   border-top: 1px solid #404040;
   flex-shrink: 0;
@@ -331,18 +330,21 @@ const onImageChanged = () => {
   left: 0;
   right: 0;
   z-index: 10;
+  overflow-x: auto;
+  gap: 4px;
 }
 
 .tool-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 2px;
+  padding: 6px 8px;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 8px;
   transition: background-color 0.2s;
-  min-width: 48px;
+  min-width: 40px;
+  flex-shrink: 0;
   border: none;
   outline: none !important;
   box-shadow: none !important;
