@@ -62,11 +62,25 @@ jobs:
         chmod +x gradlew
         # Fix build.gradle to avoid duplicate buildTypes
         sed -i '/^    buildTypes {$/,/^    }$/d' app/build.gradle
-        ./gradlew assembleRelease \
-          -PRELEASE_STORE_FILE=release-key.jks \
-          -PRELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }} \
-          -PRELEASE_KEY_ALIAS=${{ secrets.RELEASE_KEY_ALIAS }} \
-          -PRELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}
+        # Write signing configuration to build.gradle
+        cat >> app/build.gradle << 'EOF'
+    signingConfigs {
+        release {
+            storeFile file("release-key.jks")
+            storePassword "${{ secrets.RELEASE_STORE_PASSWORD }}"
+            keyAlias "${{ secrets.RELEASE_KEY_ALIAS }}"
+            keyPassword "${{ secrets.RELEASE_KEY_PASSWORD }}"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+    }
+EOF
+        ./gradlew assembleRelease
     
     - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
