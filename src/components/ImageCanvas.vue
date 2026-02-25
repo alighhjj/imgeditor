@@ -547,6 +547,12 @@ const saveImage = async () => {
     const filename = `imgeditor-${timestamp}.png`
     const path = `imgeditor/${filename}`
     
+    await Filesystem.mkdir({
+      path: 'imgeditor',
+      directory: Directory.ExternalStorage,
+      recursive: true
+    })
+    
     const file = await Filesystem.writeFile({
       path: path,
       data: dataURL,
