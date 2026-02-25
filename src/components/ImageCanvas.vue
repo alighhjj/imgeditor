@@ -550,7 +550,7 @@ const saveImage = async () => {
     await Filesystem.writeFile({
       path: filename,
       data: dataURL,
-      directory: Directory.Pictures,
+      directory: Directory.Documents,
       encoding: Encoding.UTF8
     })
     
