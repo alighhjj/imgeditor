@@ -482,7 +482,7 @@ const confirmCrop = () => {
     top: cropTop,
     width: cropWidth,
     height: cropHeight,
-    quality: 1
+    multiplier: 1
   })
   
   cropObj.visible = true
@@ -539,7 +539,7 @@ const saveImage = async () => {
     top: minY,
     width: cropWidth,
     height: cropHeight,
-    quality: 1
+    multiplier: 1
   })
   
   try {
