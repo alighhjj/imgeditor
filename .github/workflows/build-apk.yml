@@ -45,23 +45,18 @@ jobs:
     - name: Sync Capacitor
       run: npx cap sync android
     
-    - name: Generate release keystore
+    - name: Generate debug keystore
       run: |
-        # Generate keystore file from base64 encoded secret
-        echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > android/app/release-key.jks
+        cd android
+        keytool -genkeypair -v -storetype PKCS12 -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
     
     - name: Build Debug APK
       run: |
         cd android
         chmod +x gradlew
-        ./gradlew assembleDebug
+        ./gradlew assembleDebug -Pandroid.injected.signing.store.file=debug.keystore -Pandroid.injected.signing.store.password=android -Pandroid.injected.signing.key.alias=androiddebugkey -Pandroid.injected.signing.key.password=android
     
     - name: Build Release APK
-      env:
-        RELEASE_STORE_FILE: app/debug.keystore
-        RELEASE_STORE_PASSWORD: android
-        RELEASE_KEY_ALIAS: androiddebugkey
-        RELEASE_KEY_PASSWORD: android
       run: |
         cd android
         chmod +x gradlew
