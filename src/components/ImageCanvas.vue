@@ -10,6 +10,8 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { fabric } from 'fabric'
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Plugins } from '@capacitor/core'
+const { Permissions } = Plugins
 
 const props = defineProps<{
   showGrid?: boolean
@@ -533,39 +535,59 @@ const saveImage = async () => {
   const cropWidth = maxX - minX
   const cropHeight = maxY - minY
   
-  const dataURL = canvas.toDataURL({
-    format: 'png',
-    left: minX,
-    top: minY,
-    width: cropWidth,
-    height: cropHeight,
-    multiplier: 1
-  })
+    const dataURL = canvas.toDataURL({
+      format: 'png',
+      left: minX,
+      top: minY,
+      width: Math.max(1, cropWidth),
+      height: Math.max(1, cropHeight),
+      multiplier: 2
+    })
   
   try {
     const timestamp = Date.now()
     const filename = `imgeditor-${timestamp}.png`
-    const path = `imgeditor/${filename}`
     
-    await Filesystem.mkdir({
-      path: 'imgeditor',
-      directory: Directory.ExternalStorage,
-      recursive: true
-    })
+    const hasPermission = await checkStoragePermission()
+    if (!hasPermission) {
+      const granted = await requestStoragePermission()
+      if (!granted) {
+        alert('需要存储权限才能保存图片')
+        return
+      }
+    }
     
-    const file = await Filesystem.writeFile({
-      path: path,
+    await Filesystem.writeFile({
+      path: filename,
       data: dataURL,
-      directory: Directory.ExternalStorage,
+      directory: Directory.Pictures,
       encoding: Encoding.UTF8
     })
     
-    console.log('File saved:', file.uri)
+    console.log('File saved:', filename)
     
     alert('图片已保存到相册')
   } catch (error) {
     console.error('Save failed:', error)
     alert('保存失败: ' + (error as Error).message)
+  }
+}
+
+const checkStoragePermission = async () => {
+  try {
+    const { status } = await Filesystem.checkPermissions()
+    return status === 'granted' || status === 'limited'
+  } catch {
+    return false
+  }
+}
+
+const requestStoragePermission = async () => {
+  try {
+    const { status } = await Filesystem.requestPermissions()
+    return status === 'granted' || status === 'limited'
+  } catch {
+    return false
   }
 }
 

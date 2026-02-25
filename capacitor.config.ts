@@ -12,7 +12,7 @@ const config: CapacitorConfig = {
       permissions: ['camera', 'photos']
     },
     Filesystem: {
-      permissions: ['read', 'write']
+      permissions: ['read', 'write', 'photos']
     },
     CapacitorMediaScanner: {
       permissions: ['read']
