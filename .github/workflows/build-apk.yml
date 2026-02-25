@@ -64,7 +64,6 @@ jobs:
       run: |
         cd android
         chmod +x gradlew
-        bash /tmp/fix_build.gradle.sh
         ./gradlew assembleRelease
     
     - name: Upload Debug APK artifact
