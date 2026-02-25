@@ -42,17 +42,39 @@ jobs:
     - name: Sync Capacitor
       run: npx cap sync android
     
-    - name: Build APK
+    - name: Generate release keystore
+      run: |
+        # Generate keystore file from base64 encoded secret
+        echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > android/app/release-key.jks
+    
+    - name: Build Debug APK
       run: |
         cd android
         chmod +x gradlew
         ./gradlew assembleDebug
     
-    - name: Upload APK artifact
+    - name: Build Release APK
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleRelease \
+          -PRELEASE_STORE_FILE=release-key.jks \
+          -PRELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }} \
+          -PRELEASE_KEY_ALIAS=${{ secrets.RELEASE_KEY_ALIAS }} \
+          -PRELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}
+    
+    - name: Upload Debug APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
         path: android/app/build/outputs/apk/debug/*.apk
+        retention-days: 30
+    
+    - name: Upload Release APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: android/app/build/outputs/apk/release/*.apk
         retention-days: 30
     
     - name: Create Release
@@ -61,7 +83,7 @@ jobs:
       with:
         tag_name: v${{ github.run_number }}
         name: Release ${{ github.run_number }}
-        files: android/app/build/outputs/apk/debug/*.apk
+        files: android/app/build/outputs/apk/release/*.apk
         draft: false
         prerelease: false
       env:
