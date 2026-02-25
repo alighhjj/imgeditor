@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { fabric } from 'fabric'
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Filesystem, Directory } from '@capacitor/filesystem'
 
 
 const props = defineProps<{
@@ -553,8 +553,7 @@ const saveImage = async () => {
     await Filesystem.writeFile({
       path: filename,
       data: base64Data,
-      directory: Directory.Documents,
-      encoding: Encoding.UTF8
+      directory: Directory.Documents
     })
     
     console.log('File saved:', filename)
