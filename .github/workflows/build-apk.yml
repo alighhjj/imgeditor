@@ -61,7 +61,7 @@ jobs:
         cd android
         chmod +x gradlew
         # Fix build.gradle to avoid duplicate buildTypes
-        sed -i '/^}$/,/^    buildTypes {$/d' app/build.gradle
+        sed -i '/^    buildTypes {$/,/^    }$/d' app/build.gradle
         ./gradlew assembleRelease \
           -PRELEASE_STORE_FILE=release-key.jks \
           -PRELEASE_STORE_PASSWORD=${{ secrets.RELEASE_STORE_PASSWORD }} \
