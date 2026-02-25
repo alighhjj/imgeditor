@@ -10,8 +10,7 @@
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { fabric } from 'fabric'
 import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
-import { Plugins } from '@capacitor/core'
-const { Permissions } = Plugins
+
 
 const props = defineProps<{
   showGrid?: boolean
@@ -548,15 +547,6 @@ const saveImage = async () => {
     const timestamp = Date.now()
     const filename = `imgeditor-${timestamp}.png`
     
-    const hasPermission = await checkStoragePermission()
-    if (!hasPermission) {
-      const granted = await requestStoragePermission()
-      if (!granted) {
-        alert('需要存储权限才能保存图片')
-        return
-      }
-    }
-    
     await Filesystem.writeFile({
       path: filename,
       data: dataURL,
@@ -570,24 +560,6 @@ const saveImage = async () => {
   } catch (error) {
     console.error('Save failed:', error)
     alert('保存失败: ' + (error as Error).message)
-  }
-}
-
-const checkStoragePermission = async () => {
-  try {
-    const { status } = await Filesystem.checkPermissions()
-    return status === 'granted' || status === 'limited'
-  } catch {
-    return false
-  }
-}
-
-const requestStoragePermission = async () => {
-  try {
-    const { status } = await Filesystem.requestPermissions()
-    return status === 'granted' || status === 'limited'
-  } catch {
-    return false
   }
 }
 
