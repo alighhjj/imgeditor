@@ -547,9 +547,12 @@ const saveImage = async () => {
     const timestamp = Date.now()
     const filename = `imgeditor-${timestamp}.png`
     
+    // 提取 base64 数据部分，去掉 data URL 前缀
+    const base64Data = dataURL.replace(/^data:image\/\w+;base64,/, '')
+    
     await Filesystem.writeFile({
       path: filename,
-      data: dataURL,
+      data: base64Data,
       directory: Directory.Documents,
       encoding: Encoding.UTF8
     })
