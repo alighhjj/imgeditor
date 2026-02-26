@@ -47,7 +47,7 @@ jobs:
     
     - name: Generate debug keystore
       run: |
-        cd android
+        cd android/app
         keytool -genkeypair -v -storetype PKCS12 -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
     
     - name: Build Debug APK
