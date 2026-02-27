@@ -70,6 +70,8 @@ const initCanvas = () => {
     return
   }
   
+  fabric.filterBackend = new fabric.Canvas2dFilterBackend()
+  
   canvas = new fabric.Canvas(canvasEl.value, {
     backgroundColor: '#ffffff',
     selection: true,
@@ -347,47 +349,60 @@ const addText = () => {
 }
 
 const applyFilter = (filterType: string) => {
-  if (!activeImage) {
+  if (!activeImage || !canvas) {
     alert('请先加载图片')
     return
   }
   
-  activeImage.filters = []
+  const originalWidth = activeImage.width
+  const originalHeight = activeImage.height
   
   switch (filterType) {
     case 'grayscale':
-      activeImage.filters.push(new fabric.Image.filters.Grayscale())
+      activeImage.filters = [new fabric.Image.filters.Grayscale()]
       break
     case 'sepia':
-      activeImage.filters.push(new fabric.Image.filters.Sepia())
+      activeImage.filters = [new fabric.Image.filters.Sepia()]
       break
     case 'invert':
-      activeImage.filters.push(new fabric.Image.filters.Invert())
+      activeImage.filters = [new fabric.Image.filters.Invert()]
       break
     case 'blur':
-      activeImage.filters.push(new fabric.Image.filters.Blur({ blur: 0.5 }))
+      activeImage.filters = [new fabric.Image.filters.Blur({ blur: 0.5 })]
       break
     case 'brightness':
-      activeImage.filters.push(new fabric.Image.filters.Brightness({ brightness: 0.2 }))
+      activeImage.filters = [new fabric.Image.filters.Brightness({ brightness: 0.2 })]
       break
     case 'sharpen':
-      activeImage.filters.push(new fabric.Image.filters.Convolute({
+      activeImage.filters = [new fabric.Image.filters.Convolute({
         matrix: [0, -1, 0, -1, 5, -1, 0, -1, 0]
-      }))
+      })]
       break
     case 'contrast':
-      activeImage.filters.push(new fabric.Image.filters.Contrast({ contrast: 0.2 }))
+      activeImage.filters = [new fabric.Image.filters.Contrast({ contrast: 0.2 })]
       break
     case 'pixelate':
-      activeImage.filters.push(new fabric.Image.filters.Pixelate({ blocksize: 20 }))
+      activeImage.filters = [new fabric.Image.filters.Pixelate({ blocksize: 20 })]
       break
     case 'none':
     default:
+      activeImage.filters = []
       break
   }
   
   activeImage.applyFilters()
-  canvas?.renderAll()
+  
+  const newElement = activeImage.getElement()
+  if (newElement && originalWidth && originalHeight) {
+    if (newElement.width !== originalWidth || newElement.height !== originalHeight) {
+      activeImage._element = newElement
+      activeImage.width = newElement.width
+      activeImage.height = newElement.height
+      activeImage.setCoords()
+    }
+  }
+  
+  canvas.renderAll()
   saveHistory()
   emit('image-changed')
 }
