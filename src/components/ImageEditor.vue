@@ -291,6 +291,7 @@ const onImageChanged = () => {
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  padding-bottom: 80px;
 }
 
 .canvas-area {
